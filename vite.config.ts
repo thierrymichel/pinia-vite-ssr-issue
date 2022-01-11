@@ -19,8 +19,5 @@ export default () => {
         { find: '~', replacement: '/node_modules' },
       ],
     },
-    server: {
-      https: true,
-    },
   })
 }
