@@ -1,7 +1,10 @@
 import { useStore } from '@/store'
 
 export const doSomethingWithStore = () => {
-  // Use the store inside some outer module
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const store = useStore()
+
+  setTimeout(() => {
+    // Use some store action later (maybe)
+    store.fetchSomething()
+  }, 1000 * 60 * 60)
 }
