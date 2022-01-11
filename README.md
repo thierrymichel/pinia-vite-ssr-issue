@@ -1,16 +1,16 @@
 # ViteSSR + Pinia debug
 
-> see `src/core/main.ts`
+> see `src/main.ts`
 
 This does not work:
 
 ```ts
 // This does not work
-createGuards(context, chrome)
+doSomethingWithStore()
 
 if (import.meta.env.SSR) {
-  const chrome = useChromeStore()
-  chrome.fetchChrome()
+  const store = useStore()
+  store.fetchSomething()
   initialState.pinia = pinia.state.value
 } else {
   pinia.state.value = initialState.pinia
@@ -18,36 +18,36 @@ if (import.meta.env.SSR) {
 ```
 
 I'm not sure about how this works : `pinia.state.value = initialState.pinia`
-Because chrome store looks good at the initialization and is "resetted" (you should see some `FOUS` - Flash Of Unset Store…)
+Because store looks good at the initialization and is "resetted" (you should see some `FOUS` - Flash Of Unset Store…)
 
-I guess it's about instances and related to the use of `useChromeStore()` inside `guards.ts`
+I guess it's about instances and related to the use of `useStore()` inside `module.ts`
 and thus on client AND server side … because this does not work also:
 
 ```ts
-// Moving chrome assignation, does not work also
-const chrome = useChromeStore()
+// Moving store assignation, does not work also
+const store = useStore()
 
 if (import.meta.env.SSR) {
-  chrome.fetchChrome()
+  store.fetchSomething()
   initialState.pinia = pinia.state.value
 } else {
   pinia.state.value = initialState.pinia
-  // chrome change to his "initial state" on mounted
+  // store change to his "initial state" on mounted
 }
 ```
 
 Current workaround
 
 ```ts
-createGuards(context)
-const chrome = useChromeStore()
+doSomethingWithStore()
+const store = useStore()
 
 if (import.meta.env.SSR) {
-  chrome.fetchChrome()
+  store.fetchSomething()
   initialState.pinia = pinia.state.value
 } else {
-  // Patch the chrome state…
-  chrome.$patch(initialState.pinia.chrome)
+  // Patch the store state…
+  store.$patch(initialState.pinia.store)
   pinia.state.value = initialState.pinia
 }
 ```
